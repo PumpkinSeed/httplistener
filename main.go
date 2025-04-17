@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/fatih/color"
 )
@@ -52,7 +53,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/", handler)
 
-	host := os.Getenv(envHost)
+	if v := os.Getenv(envHost); v != "" {
+		host = v
+	}
 	if host == "" {
 		host = defaultHost
 	}
@@ -62,7 +65,7 @@ func main() {
 
 func outputTerminal(r *http.Request, data []byte) {
 	color.Cyan("_________________________________________________________________________________________________")
-	color.Cyan("| Incoming request")
+	color.Cyan("| Incoming request - %s", time.Now().Format(time.DateTime))
 	color.HiCyan(t(1)+"%s %s", r.Method, r.Host+r.URL.Path)
 
 	color.Yellow(t(1) + "--------------------")
